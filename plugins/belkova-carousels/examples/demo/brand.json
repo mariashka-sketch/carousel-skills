@@ -1,0 +1,27 @@
+{
+  "name": "Марианна Белькова",
+  "role": "бизнес-тренер в недвижимости",
+  "label": "Пример · демо",
+  "swipe": "листайте",
+  "colors": {
+    "bg": [
+      "#1E0B57",
+      "#4B1597",
+      "#9A2A86",
+      "#F25F28"
+    ],
+    "blobs": [
+      "#FF8A3D",
+      "#7B4DFF",
+      "#FF4F8A",
+      "#B067FF"
+    ],
+    "accent": "#FF7A2F",
+    "accent2": "#FFB067",
+    "violet": "#8B5CFF",
+    "violet2": "#B067FF",
+    "yellow": "#FFD84D",
+    "dots": true,
+    "sparks": true
+  }
+}

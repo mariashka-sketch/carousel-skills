@@ -1,0 +1,19 @@
+{
+  "name": "belkova",
+  "owner": { "name": "Marianna Belkova" },
+  "metadata": {
+    "description": "Скиллы Марианны Бельковой: анимированные карусели для Instagram/Telegram и 3D-карусели для сайтов",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "belkova-carousels",
+      "source": "./plugins/belkova-carousels",
+      "description": "Анимированные карусели MP4 1080×1350 (motion-carousel) и 3D-coverflow HTML по 12 пресетам (web-3d-carousel)",
+      "version": "1.0.0",
+      "author": { "name": "Marianna Belkova" },
+      "license": "MIT",
+      "keywords": ["карусель", "carousel", "instagram", "telegram", "coverflow"]
+    }
+  ]
+}

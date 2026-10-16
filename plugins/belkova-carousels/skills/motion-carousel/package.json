@@ -1,0 +1,16 @@
+{
+  "name": "motion-carousel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Анимированные карусели для Instagram и Telegram: слайды MP4 1080×1350 из HTML-движка",
+  "author": "Marianna Belkova",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0"
+  },
+  "scripts": {
+    "doctor": "node bin/carousel.js doctor",
+    "smoke": "node bin/carousel.js build --project ../../examples/demo && node bin/carousel.js render --project ../../examples/demo --qa"
+  }
+}

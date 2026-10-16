@@ -1,0 +1,10 @@
+{
+  "name": "belkova-carousels",
+  "version": "1.0.0",
+  "description": "Карусели от Марианны Бельковой: анимированные слайды-ролики MP4 1080×1350 для Instagram и Telegram (motion-carousel) и 3D-карусели для сайта по 12 пресетам (web-3d-carousel)",
+  "author": { "name": "Marianna Belkova" },
+  "homepage": "https://github.com/mariashka-sketch/carousel-skills",
+  "repository": "https://github.com/mariashka-sketch/carousel-skills",
+  "license": "MIT",
+  "keywords": ["карусель", "carousel", "instagram", "telegram", "coverflow", "motion", "риелтор"]
+}

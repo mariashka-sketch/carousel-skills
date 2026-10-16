@@ -1,0 +1,185 @@
+/* Анимированная карусель. Холст 1080×1350 (4:5). Цвета — переменные, их переопределяет brand.json. */
+:root{
+  --vi:#8B5CFF; --vi2:#B067FF; --pk:#FF7A2F; --pk2:#FFB067; --yl:#FFD84D; --mint:#5BE3B0; --rd:#FF6B7A;
+  --wh:#FFFFFF; --tx:#F4EEFF; --mu:#D9CDF5; --dim:#7F72A8; --line:rgba(255,255,255,.12);
+  --glass:rgba(22,8,58,.42); --glass2:rgba(22,8,58,.55);
+  --ink:#1D1433; --ink2:#4A3F66; --page:#1E0B57;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html,body{ background:var(--page); }
+body{ font-family:"Manrope",system-ui,sans-serif; color:var(--tx); -webkit-font-smoothing:antialiased; overflow:hidden; }
+.page{ position:relative; width:1080px; height:1350px; overflow:hidden; background:#0C0620; color:var(--tx); }
+.page > canvas.bg{ position:absolute; inset:0; width:1080px; height:1350px; }
+.page .blk{ position:absolute; }
+
+/* рамка слайда */
+.mk{ position:absolute; left:80px; top:62px; display:flex; align-items:center; gap:12px; padding:11px 18px 11px 14px; border-radius:999px;
+  background:rgba(22,8,58,.45); border:1px solid rgba(255,255,255,.16); font:800 16px/1 "Manrope"; letter-spacing:.14em; text-transform:uppercase; color:#F3EDFF; white-space:nowrap; }
+.mk i{ width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,var(--pk),var(--vi)); box-shadow:0 0 12px var(--pk); display:block; }
+.ctr{ position:absolute; right:80px; top:62px; display:flex; align-items:center; gap:14px; font:700 18px/1 "Unbounded"; color:#F3EDFF; }
+.ctr em{ font-style:normal; color:var(--dim); }
+.ctr .sg{ display:flex; gap:5px; } .ctr .sg b{ display:block; width:16px; height:5px; border-radius:3px; background:rgba(255,255,255,.18); }
+.ctr .sg b.on{ background:linear-gradient(90deg,var(--pk),var(--vi)); }
+.ft{ position:absolute; left:80px; right:80px; bottom:50px; display:flex; align-items:center; justify-content:space-between; font:600 18px/1.3 "Manrope"; color:#F3EDFF; text-shadow:0 1px 8px rgba(22,8,58,.6); }
+.ft b{ color:#fff; font-weight:800; }
+.ft .sw{ display:flex; align-items:center; gap:10px; padding:10px 14px 10px 18px; border-radius:999px; background:rgba(22,8,58,.72); font:800 15px/1 "Manrope"; letter-spacing:.14em; text-transform:uppercase; color:#F3EDFF; white-space:nowrap; }
+.ft .sw .chev{ width:44px; height:18px; }
+.chev path{ fill:none; stroke:var(--pk2); stroke-width:4.2; stroke-linecap:round; stroke-linejoin:round; }
+.chev.vi path{ stroke:var(--vi); } .chev.yl path{ stroke:var(--yl); } .chev.wh path{ stroke:#fff; }
+
+/* рубрика и заголовок */
+.kick{ position:absolute; left:80px; top:148px; display:flex; align-items:center; gap:14px; font:800 18px/1 "Manrope"; letter-spacing:.16em; text-transform:uppercase; color:var(--pk2); white-space:nowrap; }
+.kick .kl{ display:block; width:30px; height:3px; border-radius:2px; background:currentColor; }
+.h{ position:absolute; left:80px; top:186px; width:920px; font:600 60px/1.12 "Unbounded"; letter-spacing:-.02em; color:#fff; }
+.h .w{ display:inline-block; overflow:hidden; vertical-align:top; padding:0 .02em .12em; margin:0 -.02em -.12em; }
+.h .w + .w{ margin-left:.24em; }
+.h .wi{ display:inline-block; will-change:transform; }
+.h .acc{ background:linear-gradient(100deg,var(--yl) 0%,var(--pk2) 50%,var(--pk) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.h .acc.or{ background:linear-gradient(100deg,#FFE27A,var(--yl)); -webkit-background-clip:text; background-clip:text; }
+
+/* текст */
+.tx{ font:600 30px/1.42 "Manrope"; color:#F3EDFF; }
+.tx.lead{ font:500 30px/1.45 "Manrope"; color:var(--tx); }
+.tx.mu{ font:500 26px/1.45 "Manrope"; color:var(--mu); }
+.tx.xl{ font:600 36px/1.36 "Manrope"; }
+.tx b{ color:#fff; font-weight:800; } .tx .y, .y{ color:var(--yl); } .tx .p, .p{ color:var(--pk2); }
+.big-q{ font:600 50px/1.24 "Unbounded"; color:#fff; letter-spacing:-.015em; }
+.src{ position:absolute; left:80px; bottom:110px; font:500 16px/1.3 "Manrope"; color:var(--dim); }
+.sig{ position:absolute; right:80px; bottom:110px; font:600 18px/1.3 "Manrope"; color:var(--mu); }
+.sig b{ color:#fff; }
+
+/* стеклянные и белые карточки */
+.card{ background:var(--glass); border:1px solid rgba(255,255,255,.16); border-radius:26px; backdrop-filter:blur(6px);
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08); }
+.card.wh{ background:#fff; border-color:transparent; color:var(--ink); box-shadow:0 30px 70px -26px rgba(0,0,0,.65); }
+.card.hot{ background:linear-gradient(135deg,rgba(255,122,47,.5),rgba(139,92,255,.45)); border-color:rgba(255,196,140,.6); }
+.card.yl{ background:rgba(255,216,77,.12); border-color:rgba(255,216,77,.5); }
+.card.ok{ border-color:rgba(91,227,176,.45); background:rgba(91,227,176,.08); }
+.card.no{ border-color:rgba(255,107,122,.45); background:rgba(255,107,122,.08); }
+.lbl{ font:800 15px/1 "Manrope"; letter-spacing:.15em; text-transform:uppercase; color:var(--pk2); }
+.lbl.yl{ color:var(--yl); } .lbl.vi{ color:#B9A6FF; } .lbl.mi{ color:var(--mint); } .lbl.rd{ color:var(--rd); }
+.card.wh .lbl{ color:#D9531A; }
+
+/* иконки */
+.ic{ fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; display:block; width:100%; height:100%; overflow:visible; }
+.ic .icd{ fill:currentColor; stroke:none; }
+.ib{ display:grid; place-items:center; flex:none; width:64px; height:64px; padding:15px; border-radius:20px; color:#fff;
+  background:linear-gradient(135deg,var(--pk),var(--vi)); box-shadow:0 12px 26px -10px rgba(255,122,47,.7); }
+.ib.gl{ background:rgba(255,255,255,.1); box-shadow:none; color:var(--pk2); border:1px solid rgba(255,255,255,.14); }
+.ib.yl{ background:linear-gradient(135deg,#FFE27A,var(--yl)); color:#3A2600; box-shadow:0 12px 26px -10px rgba(255,197,61,.6); }
+.ib.mi{ background:rgba(91,227,176,.16); color:var(--mint); box-shadow:none; }
+.ib.rd{ background:rgba(255,107,122,.16); color:var(--rd); box-shadow:none; }
+
+/* строки-пункты */
+.rows{ display:flex; flex-direction:column; gap:16px; }
+.row{ display:flex; align-items:center; gap:24px; padding:26px 28px; }
+.row .rt b{ display:block; font:800 32px/1.22 "Manrope"; color:#fff; }
+.row .rt p{ margin-top:8px; font:500 25px/1.4 "Manrope"; color:var(--mu); }
+.row .rn{ flex:none; width:58px; font:700 30px/1 "Unbounded"; letter-spacing:-.03em; background:linear-gradient(135deg,var(--pk2),var(--vi2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.card.wh.row .rt b{ color:var(--ink); } .card.wh.row .rt p{ color:var(--ink2); }
+
+/* сетка карточек */
+.cards{ display:grid; align-items:stretch; }
+.cd{ position:relative; padding:28px 28px 30px; display:flex; flex-direction:column; gap:18px; }
+.cd .cnn{ position:absolute; right:24px; top:22px; font:700 20px/1 "Unbounded"; color:rgba(255,255,255,.35); letter-spacing:-.02em; }
+.cd .ct{ display:block; font:800 30px/1.22 "Manrope"; color:#fff; }
+.cd .cx{ margin-top:10px; font:500 24px/1.42 "Manrope"; color:var(--mu); }
+.cd .cx b{ color:#fff; font-weight:800; }
+.cd.wh .ct{ color:var(--ink); } .cd.wh .cx{ color:var(--ink2); }
+
+/* цифры */
+.stats{ display:grid; align-items:stretch; }
+.sti{ position:relative; padding:28px 30px; display:flex; flex-direction:column; }
+.sti .sv{ display:block; font:700 var(--vsz,76px)/1 "Unbounded"; letter-spacing:-.04em; white-space:nowrap; background:linear-gradient(135deg,var(--yl),var(--pk2) 60%,var(--pk)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.sti .sl2{ margin-top:16px; font:600 23px/1.38 "Manrope"; color:#fff; }
+.sti .ss{ margin-top:auto; padding-top:14px; font:500 15px/1.35 "Manrope"; color:var(--dim); }
+.sti .rg{ position:absolute; right:22px; top:22px; width:76px; height:76px; transform:rotate(-90deg); }
+.sti .rt{ fill:none; stroke:rgba(255,255,255,.14); stroke-width:12; }
+.sti .ra{ fill:none; stroke:var(--yl); stroke-width:12; stroke-linecap:round; stroke-dasharray:0 1; }
+.sti.wh .sv{ background:linear-gradient(135deg,var(--pk),var(--vi)); -webkit-background-clip:text; background-clip:text; } .sti.wh .sl2{ color:var(--ink); }
+
+/* шаги */
+.steps{ position:absolute; }
+.steps .sc{ position:absolute; left:0; top:0; overflow:visible; }
+.steps .cl{ fill:none; stroke:rgba(255,255,255,.3); stroke-width:4; stroke-linecap:round; }
+.steps .tr{ fill:var(--yl); filter:drop-shadow(0 0 8px rgba(255,216,77,.9)); }
+.steps .sp{ position:absolute; top:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 10px; }
+.steps .sn{ position:relative; border-radius:50%; background:linear-gradient(135deg,var(--pk),var(--vi)); display:grid; place-items:center; color:#fff; padding:18px; box-shadow:0 12px 26px -10px rgba(255,122,47,.7); }
+.steps .sn b{ font:700 24px/1 "Unbounded"; letter-spacing:-.02em; }
+.steps .stt{ margin-top:20px; font:800 26px/1.25 "Manrope"; color:#fff; }
+.steps .std{ margin-top:10px; font:500 21px/1.4 "Manrope"; color:var(--mu); }
+
+/* чек-лист */
+.check{ display:flex; flex-direction:column; }
+.ck{ display:flex; align-items:center; gap:22px; padding:20px 26px; }
+.ck .kn{ flex:none; width:44px; font:700 22px/1 "Unbounded"; letter-spacing:-.02em; background:linear-gradient(135deg,var(--pk2),var(--vi2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.ck .kt{ flex:1; font:600 28px/1.32 "Manrope"; color:#fff; }
+.ck .kb{ flex:none; width:40px; height:40px; border-radius:50%; background:var(--mint); color:#0B2A1F; padding:9px; box-shadow:0 6px 16px -4px rgba(91,227,176,.6); }
+.ck .kb .ic{ stroke-width:5; }
+
+/* было → стало */
+.shift{ display:flex; flex-direction:column; gap:14px; }
+.shift .sr{ display:grid; grid-template-columns:1fr 70px 1.25fr; align-items:center; column-gap:22px; padding:22px 28px; }
+.shift .sa{ position:relative; justify-self:start; font:600 27px/1.3 "Manrope"; color:var(--dim); }
+.shift .sk{ position:absolute; left:-4px; right:-4px; top:52%; height:3px; border-radius:2px; background:var(--rd); display:block; }
+.shift .sar{ width:70px; height:24px; overflow:visible; }
+.shift .sar path{ fill:none; stroke:var(--yl); stroke-width:3.5; stroke-linecap:round; stroke-linejoin:round; }
+.shift .sb{ font:800 28px/1.28 "Manrope"; color:#fff; }
+
+/* плашка */
+.bn{ display:flex; align-items:center; gap:26px; padding:26px 34px; }
+.bn .chev{ flex:none; }
+.bn p{ font:600 28px/1.4 "Manrope"; color:#fff; } .bn p b{ color:var(--yl); }
+.bn .lbl{ display:block; margin-bottom:8px; }
+.bn.yl p{ color:#fff; }
+
+/* пилюли и чипы */
+.pl{ display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font:800 15px/1 "Manrope"; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
+.pl.mi{ background:rgba(91,227,176,.14); color:var(--mint); } .pl.rd{ background:rgba(255,107,122,.14); color:var(--rd); }
+.pl.yl{ background:var(--yl); color:#3A2600; } .pl.pk{ background:linear-gradient(135deg,var(--pk),var(--vi)); color:#fff; }
+.pl.gl{ background:rgba(255,255,255,.1); color:#F3EDFF; border:1px solid rgba(255,255,255,.14); }
+.pl .ic{ width:22px; height:22px; stroke-width:3.4; }
+.chips{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+.chips .lbl{ width:100%; margin-bottom:4px; }
+.chips .pl{ font-size:18px; letter-spacing:.04em; text-transform:none; padding:14px 22px; }
+
+/* телефон, окно, картинка */
+.phone{ position:absolute; border-radius:50px; padding:12px; background:linear-gradient(160deg,#2A2140,#0A0614); box-shadow:0 50px 90px -30px rgba(0,0,0,.8), 0 0 0 2px #3B3158 inset, 0 0 60px -10px rgba(183,92,246,.45); }
+.phone .scr{ position:relative; width:100%; height:100%; border-radius:40px; overflow:hidden; background:#fff; }
+.phone .scr img, .phone .scr video{ display:block; width:100%; height:100%; object-fit:cover; }
+.win{ position:absolute; border-radius:22px; overflow:hidden; background:#fff; box-shadow:0 40px 80px -28px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.12); }
+.win .bar{ height:38px; display:flex; align-items:center; gap:8px; padding:0 16px; background:#EFEAF8; border-bottom:1px solid #E1DAF0; }
+.win .bar i{ width:11px; height:11px; border-radius:50%; display:block; }
+.win .bar i:nth-child(1){ background:#FF6B5F; } .win .bar i:nth-child(2){ background:#FFC23D; } .win .bar i:nth-child(3){ background:#2ACB4F; }
+.win .body{ position:relative; overflow:hidden; height:calc(100% - 38px); }
+.win .body img{ display:block; width:100%; }
+.pic{ border-radius:26px; overflow:hidden; box-shadow:0 40px 80px -28px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.14); background:#0C0620; }
+.pic img{ display:block; width:100%; height:100%; }
+
+/* фото с аурой */
+.ph{ position:absolute; pointer-events:none; }
+.ph img{ position:absolute; left:0; bottom:0; width:100%; height:auto; display:block; }
+.ph .halo{ position:absolute; left:-20%; right:-20%; top:-6%; height:80%; border-radius:50%;
+  background:radial-gradient(closest-side, rgba(255,122,47,.42), rgba(139,108,255,.22) 55%, rgba(139,108,255,0)); filter:blur(6px); }
+.ph.bust{ overflow:hidden; border-radius:0 0 30px 30px; }
+.ph.bust img{ top:0; bottom:auto; }
+.ph.bust .halo{ top:4%; }
+
+/* финал: предложение и вопрос */
+.ofr{ padding:36px 40px 38px; }
+.ofr .mt{ display:block; margin-top:16px; font:700 46px/1.14 "Unbounded"; letter-spacing:-.02em; color:#fff; }
+.ofr .mw{ margin-top:24px; display:flex; flex-wrap:wrap; gap:10px; }
+.ofr .mw .pl{ font-size:17px; letter-spacing:.06em; padding:13px 18px; }
+.ofr .mn{ margin-top:16px; font:600 24px/1.4 "Manrope"; color:var(--tx); }
+.qb{ display:flex; align-items:flex-start; gap:18px; }
+.qb .ib{ width:58px; height:58px; padding:13px; }
+.qb p{ font:600 27px/1.42 "Manrope"; color:#fff; padding-top:6px; }
+
+/* режимы */
+#exportHost{ position:fixed; left:0; top:0; width:1080px; height:1350px; }
+body.export{ background:#000; }
+#grid{ position:fixed; inset:0; overflow:auto; background:#0C0620; padding:28px; display:flex; flex-wrap:wrap; gap:18px; align-content:flex-start; }
+#grid > .set{ width:100%; font:800 18px/1 "Manrope"; color:#F3EDFF; margin:18px 0 4px; letter-spacing:.06em; }
+#grid > .th{ position:relative; width:216px; border-radius:12px; overflow:hidden; cursor:pointer; flex:none; }
+#grid > .th::before{ content:""; display:block; padding-top:125%; }
+#grid > .th > .page{ position:absolute; left:0; top:0; transform-origin:0 0; transform:scale(.2); pointer-events:none; }

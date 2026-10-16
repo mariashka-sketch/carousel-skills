@@ -1,0 +1,11 @@
+node_modules/
+._*
+.DS_Store
+Thumbs.db
+*/out/
+*/qa/
+**/out/
+**/qa/
+**/index.html
+**/index-dev.html
+**/к публикации/
